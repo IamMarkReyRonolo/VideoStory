@@ -10,7 +10,12 @@
 		</div>
 
 		<div class="searchCon">
-			<v-text-field outlined placeholder="Search video" rounded></v-text-field>
+			<v-text-field
+				outlined
+				placeholder="Search video"
+				rounded
+				dense
+			></v-text-field>
 		</div>
 
 		<div class="videoListsCon">
