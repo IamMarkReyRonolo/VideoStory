@@ -8,12 +8,12 @@
 				🎥 Your Videos
 			</h2>
 			<div class="controls">
-				<v-btn color="#3500D4" dark large
+				<v-btn color="#3500D4" dark large to="/update"
 					><span style="text-transform: capitalize; font-weight: bold"
 						>Edit video</span
 					></v-btn
 				>
-				<v-btn outlined color="error" large
+				<v-btn outlined color="error" large @click="clickedDelete = true"
 					><span style="text-transform: capitalize; font-weight: bold"
 						>Delete Video</span
 					></v-btn
@@ -35,14 +35,27 @@
 			</div>
 			<div class="dateAdded">Added at: November 3, 2023</div>
 		</div>
+		<DeleteDialog
+			:dialog="clickedDelete"
+			v-if="clickedDelete"
+			@closeDialog="closeDialog"
+		/>
 	</div>
 </template>
 
 <script>
+	import DeleteDialog from "../components/DeleteDialog.vue";
 	export default {
 		name: "VideoPlayer",
-		components: {},
-		data: () => ({}),
+		components: { DeleteDialog },
+		data: () => ({
+			clickedDelete: false,
+		}),
+		methods: {
+			closeDialog() {
+				this.clickedDelete = false;
+			},
+		},
 	};
 </script>
 

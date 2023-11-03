@@ -21,6 +21,11 @@ const routes = [
 		name: "add-video",
 		component: AddVideo,
 	},
+	{
+		path: "/update",
+		name: "update-video",
+		component: AddVideo,
+	},
 ];
 
 const router = new VueRouter({
