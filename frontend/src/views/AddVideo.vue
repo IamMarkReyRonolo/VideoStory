@@ -7,13 +7,18 @@
 			>
 				🎥 Your Videos
 			</h2>
-			<v-btn color="#3500D4" dark large
+			<v-btn
+				color="#3500D4"
+				large
+				@click="saveVideo()"
+				:disabled="!validateFields"
+				:dark="validateFields"
 				><span style="text-transform: capitalize; font-weight: bold"
 					>Save video</span
 				></v-btn
 			>
 		</div>
-		<div class="addVideoCon">
+		<div class="addVideoCon" v-if="!resetData">
 			<div class="section">
 				<div class="fieldCon fileSection">
 					<div class="fieldLabel" style="font-weight: bold; padding: 5px 0px">
@@ -58,7 +63,7 @@
 						width="450px"
 						height="250px"
 						controls
-						v-show="file != ''"
+						v-show="this.videoData != ''"
 						:poster="thumbnail"
 					/>
 				</div>
@@ -71,38 +76,98 @@
 				</div>
 			</div>
 		</div>
+
+		<SavingModal :dialog="clickedSaved" v-if="clickedSaved" />
 	</div>
 </template>
 
 <script>
-	import DropFile from "./DropFile.vue";
+	import SavingModal from "../components/SavingModal.vue";
 	export default {
 		name: "AddVideo",
-		components: { DropFile },
+		components: { SavingModal },
 		data: () => ({
 			video: "",
 			thumbnail: "",
 			title: "",
 			description: "",
+			clickedSaved: false,
+			resetData: false,
+			videoData: null,
+			thumbnailImage: null,
+			validated: false,
 		}),
 		methods: {
 			onFileChange(e) {
 				const file = e.target.files[0];
-				this.thumbnail = URL.createObjectURL(file);
+				if (file) {
+					this.thumbnail = URL.createObjectURL(file);
+					this.thumbnailImage = file;
+				} else {
+					this.thumbnail = "";
+					this.thumbnailImage = null;
+				}
 			},
 
 			handleFileUpload(event) {
-				this.file = event.target.files[0];
-				this.previewVideo();
+				const file = event.target.files[0];
+				if (file) {
+					this.videoData = file;
+					this.previewVideo();
+				} else {
+					this.videoData = null;
+					let video = document.getElementById("video-preview");
+					video.src = null;
+				}
 			},
 			previewVideo() {
 				let video = document.getElementById("video-preview");
 				let reader = new FileReader();
 
-				reader.readAsDataURL(this.file);
+				reader.readAsDataURL(this.videoData);
 				reader.addEventListener("load", function () {
 					video.src = reader.result;
 				});
+			},
+
+			saveVideo() {
+				this.clickedSaved = true;
+				let video_post = {
+					title: this.title,
+					description: this.description,
+					video_url: this.videoData,
+					image_url: this.thumbnailImage,
+				};
+				setTimeout(() => {
+					this.clickedSaved = false;
+					this.reset();
+				}, 2000);
+			},
+
+			reset() {
+				this.video = "";
+				this.thumbnail = "";
+				this.title = "";
+				this.description = "";
+				this.resetData = true;
+				setTimeout(() => {
+					this.clickedSaved = false;
+					this.resetData = false;
+				}, 200);
+			},
+		},
+
+		computed: {
+			validateFields: function () {
+				if (
+					this.title &&
+					this.description &&
+					this.thumbnailImage &&
+					this.videoData
+				) {
+					return true;
+				}
+				return false;
 			},
 		},
 	};
