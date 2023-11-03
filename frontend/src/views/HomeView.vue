@@ -1,7 +1,12 @@
 <template>
 	<div class="home">
 		<div class="headerCon">
-			<h2 style="font-weight: bolder; font-size: 28px">Your Videos</h2>
+			<h2
+				style="font-weight: bolder; font-size: 28px; cursor: pointer"
+				@click="$router.push('/')"
+			>
+				🎥 Your Videos
+			</h2>
 			<v-btn color="#3500D4" dark large to="/add"
 				><span style="text-transform: capitalize; font-weight: bold"
 					>Upload video</span

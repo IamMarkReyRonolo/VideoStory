@@ -1,7 +1,12 @@
 <template>
 	<div class="video-player">
 		<div class="headerCon">
-			<h2 style="font-weight: bolder; font-size: 28px">Your Videos</h2>
+			<h2
+				style="font-weight: bolder; font-size: 28px; cursor: pointer"
+				@click="$router.push('/')"
+			>
+				🎥 Your Videos
+			</h2>
 			<div class="controls">
 				<v-btn color="#3500D4" dark large
 					><span style="text-transform: capitalize; font-weight: bold"
