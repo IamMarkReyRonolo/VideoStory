@@ -3,15 +3,26 @@
 		<div class="videoPlayerSection">
 			<v-img
 				:width="300"
-				src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
-			></v-img>
+				:height="200"
+				:src="videoData.thumbnail_url"
+				style="
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					text-align: center;
+					border: 1px solid rgb(150, 150, 150);
+					border-radius: 5px;
+				"
+			>
+				<v-icon size="70">mdi-play</v-icon>
+			</v-img>
 		</div>
 		<div class="videoDetailsSection">
 			<div class="titleCon">{{ videoData.title }}</div>
 			<div class="descriptionCon">
 				{{ videoData.description }}
 			</div>
-			<div class="dateAdded">Added at: November 3, 2023</div>
+			<div class="dateAdded">Added at:{{ getCreatedDate() }}</div>
 		</div>
 	</div>
 </template>
@@ -24,6 +35,12 @@
 			videoData: Object,
 		},
 		data: () => ({}),
+		methods: {
+			getCreatedDate() {
+				var d = new Date(this.videoData.created_at);
+				return d.toLocaleDateString("en-US");
+			},
+		},
 	};
 </script>
 

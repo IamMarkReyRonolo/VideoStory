@@ -45,14 +45,22 @@
 					<div class="fieldLabel" style="font-weight: bold; padding: 5px 0px">
 						Title
 					</div>
-					<v-text-field outlined clearable v-model="title"></v-text-field>
+					<v-text-field
+						outlined
+						clearable
+						v-model="videoPost.title"
+					></v-text-field>
 				</div>
 
 				<div class="fieldCon">
 					<div class="fieldLabel" style="font-weight: bold; padding: 5px 0px">
 						Description
 					</div>
-					<v-textarea outlined no-resize v-model="description"></v-textarea>
+					<v-textarea
+						outlined
+						no-resize
+						v-model="videoPost.description"
+					></v-textarea>
 				</div>
 			</div>
 			<div class="section">
@@ -64,28 +72,40 @@
 						height="250px"
 						controls
 						v-show="this.videoData != ''"
-						:poster="thumbnail"
+						:poster="videoPost.thumbnail_url"
+						:src="videoPost.video_url"
 					/>
 				</div>
 				<div class="videoDetailsSection">
-					<div class="titleCon">{{ title }}</div>
+					<div class="titleCon">{{ videoPost.title }}</div>
 					<div class="descriptionCon">
-						{{ description }}
+						{{ videoPost.description }}
 					</div>
-					<div class="dateAdded">Added at: November 3, 2023</div>
+					<div class="dateAdded">Added at: {{ videoPost.created_at }}</div>
+					<div class="dateAdded">Updated at: {{ videoPost.updated_at }}</div>
 				</div>
 			</div>
 		</div>
 
 		<SavingModal :dialog="clickedSaved" v-if="clickedSaved" />
+		<Snackbar
+			:snackbar="snackbar"
+			:message="message"
+			@closeSnackbar="snackbar = false"
+			v-if="snackbar"
+		/>
 	</div>
 </template>
 
 <script>
 	import SavingModal from "../components/SavingModal.vue";
+	import CloudinaryAPI from "../apis/CloudinaryAPI";
+	import VideoAPI from "../apis/VideoAPI";
+	import Snackbar from "../components/Snackbar.vue";
+
 	export default {
 		name: "AddVideo",
-		components: { SavingModal },
+		components: { SavingModal, Snackbar },
 		data: () => ({
 			video: "",
 			thumbnail: "",
@@ -96,12 +116,27 @@
 			videoData: null,
 			thumbnailImage: null,
 			validated: false,
+			videoPost: {
+				title: "",
+				description: "",
+				video_url: "",
+				thumbnail_url: "",
+			},
+			snackbar: false,
+			message: "",
 		}),
+		created() {
+			if (this.$route.params.video_data) {
+				this.videoPost = this.$route.params.video_data;
+			} else {
+				this.$router.push("/");
+			}
+		},
 		methods: {
 			onFileChange(e) {
 				const file = e.target.files[0];
 				if (file) {
-					this.thumbnail = URL.createObjectURL(file);
+					this.videoPost.thumbnail_url = URL.createObjectURL(file);
 					this.thumbnailImage = file;
 				} else {
 					this.thumbnail = "";
@@ -130,18 +165,39 @@
 				});
 			},
 
-			saveVideo() {
-				this.clickedSaved = true;
-				let video_post = {
-					title: this.title,
-					description: this.description,
-					video_url: this.videoData,
-					image_url: this.thumbnailImage,
-				};
-				setTimeout(() => {
+			async saveVideo() {
+				try {
+					this.clickedSaved = true;
+
+					if (this.videoData) {
+						this.videoPost.video_url = await this.uploadFile(
+							this.videoData,
+							"video"
+						);
+					}
+
+					if (this.thumbnailImage) {
+						this.videoPost.thumbnail_url = await this.uploadFile(
+							this.thumbnailImage,
+							"thumbnail"
+						);
+					}
+
+					const result = await VideoAPI.prototype.update_videopost(
+						this.videoPost.id,
+						this.videoPost
+					);
+
 					this.clickedSaved = false;
-					this.reset();
-				}, 2000);
+					this.snackbar = true;
+					this.message = "Successfully updated video";
+					setTimeout(() => {
+						this.$router.push("/video/" + this.videoPost.id);
+					}, 1000);
+				} catch (error) {
+					this.snackbar = true;
+					this.message = "An error occured";
+				}
 			},
 
 			reset() {
@@ -155,15 +211,37 @@
 					this.resetData = false;
 				}, 200);
 			},
+
+			async uploadFile(file, file_type) {
+				if (file_type == "video") {
+					let formData = new FormData();
+					formData.append("file", file);
+					formData.append("upload_preset", "video-app");
+					const result = await CloudinaryAPI.prototype.uploadVideo(formData);
+					if (result) {
+						return result.secure_url;
+					}
+				}
+
+				if (file_type == "thumbnail") {
+					let formData = new FormData();
+					formData.append("file", file);
+					formData.append("upload_preset", "video-app");
+					const result = await CloudinaryAPI.prototype.uploadImage(formData);
+					if (result) {
+						return result.secure_url;
+					}
+				}
+			},
 		},
 
 		computed: {
 			validateFields: function () {
 				if (
-					this.title &&
-					this.description &&
-					this.thumbnailImage &&
-					this.videoData
+					this.videoPost.title &&
+					this.videoPost.description &&
+					this.videoPost.thumbnail_url &&
+					this.videoPost.video_url
 				) {
 					return true;
 				}

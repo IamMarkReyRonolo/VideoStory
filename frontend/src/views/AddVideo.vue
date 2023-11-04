@@ -14,7 +14,7 @@
 				:disabled="!validateFields"
 				:dark="validateFields"
 				><span style="text-transform: capitalize; font-weight: bold"
-					>Save video</span
+					>Post video</span
 				></v-btn
 			>
 		</div>
@@ -78,14 +78,23 @@
 		</div>
 
 		<SavingModal :dialog="clickedSaved" v-if="clickedSaved" />
+		<Snackbar
+			:snackbar="snackbar"
+			:message="message"
+			@closeSnackbar="snackbar = false"
+			v-if="snackbar"
+		/>
 	</div>
 </template>
 
 <script>
 	import SavingModal from "../components/SavingModal.vue";
+	import CloudinaryAPI from "../apis/CloudinaryAPI";
+	import VideoAPI from "../apis/VideoAPI";
+	import Snackbar from "../components/Snackbar.vue";
 	export default {
 		name: "AddVideo",
-		components: { SavingModal },
+		components: { SavingModal, Snackbar },
 		data: () => ({
 			video: "",
 			thumbnail: "",
@@ -96,6 +105,8 @@
 			videoData: null,
 			thumbnailImage: null,
 			validated: false,
+			snackbar: false,
+			message: "",
 		}),
 		methods: {
 			onFileChange(e) {
@@ -130,18 +141,32 @@
 				});
 			},
 
-			saveVideo() {
-				this.clickedSaved = true;
-				let video_post = {
-					title: this.title,
-					description: this.description,
-					video_url: this.videoData,
-					image_url: this.thumbnailImage,
-				};
-				setTimeout(() => {
+			async saveVideo() {
+				try {
+					this.clickedSaved = true;
+					let video_post = {
+						title: this.title,
+						description: this.description,
+						video_url: null,
+						thumbnail_url: null,
+					};
+
+					video_post.video_url = await this.uploadFile(this.videoData, "video");
+					video_post.thumbnail_url = await this.uploadFile(
+						this.thumbnailImage,
+						"thumbnail"
+					);
+
+					const result = await VideoAPI.prototype.upload_video(video_post);
+
 					this.clickedSaved = false;
+					this.snackbar = true;
+					this.message = "Successfully posted video";
 					this.reset();
-				}, 2000);
+				} catch (error) {
+					this.snackbar = true;
+					this.message = "An error occured";
+				}
 			},
 
 			reset() {
@@ -154,6 +179,28 @@
 					this.clickedSaved = false;
 					this.resetData = false;
 				}, 200);
+			},
+
+			async uploadFile(file, file_type) {
+				if (file_type == "video") {
+					let formData = new FormData();
+					formData.append("file", file);
+					formData.append("upload_preset", "video-app");
+					const result = await CloudinaryAPI.prototype.uploadVideo(formData);
+					if (result) {
+						return result.secure_url;
+					}
+				}
+
+				if (file_type == "thumbnail") {
+					let formData = new FormData();
+					formData.append("file", file);
+					formData.append("upload_preset", "video-app");
+					const result = await CloudinaryAPI.prototype.uploadImage(formData);
+					if (result) {
+						return result.secure_url;
+					}
+				}
 			},
 		},
 

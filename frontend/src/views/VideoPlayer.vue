@@ -8,7 +8,7 @@
 				🎥 Your Videos
 			</h2>
 			<div class="controls">
-				<v-btn color="#3500D4" dark large to="/update"
+				<v-btn color="#3500D4" dark large @click="updateVideo()"
 					><span style="text-transform: capitalize; font-weight: bold"
 						>Edit video</span
 					></v-btn
@@ -22,8 +22,8 @@
 		</div>
 		<div class="fetched" v-if="fetched">
 			<div class="videoPlayerSection">
-				<video width="1000" controls>
-					<source src="movie.mp4" type="video/mp4" />
+				<video width="1000" height="600" controls :poster="video.thumbnail_url">
+					<source :src="video.video_url" type="video/mp4" />
 				</video>
 			</div>
 			<div class="videoDetailsSection">
@@ -49,8 +49,17 @@
 
 		<DeleteDialog
 			:dialog="clickedDelete"
+			:loading="loadingDelete"
 			v-if="clickedDelete"
+			@confirm="deleteVideoPost"
 			@closeDialog="closeDialog"
+		/>
+
+		<Snackbar
+			:snackbar="snackbar"
+			:message="message"
+			@closeSnackbar="snackbar = false"
+			v-if="snackbar"
 		/>
 	</div>
 </template>
@@ -58,15 +67,19 @@
 <script>
 	import DeleteDialog from "../components/DeleteDialog.vue";
 	import VideoAPI from "../apis/VideoAPI";
+	import Snackbar from "../components/Snackbar.vue";
 	export default {
 		name: "VideoPlayer",
-		components: { DeleteDialog },
+		components: { DeleteDialog, Snackbar },
 		data: () => ({
 			clickedDelete: false,
 			video: {},
 			loading: false,
 			fetched: false,
 			error: false,
+			loadingDelete: false,
+			snackbar: false,
+			message: "",
 		}),
 		async created() {
 			try {
@@ -83,7 +96,7 @@
 					this.video.updated_at = u.toLocaleDateString("en-US");
 					this.fetched = true;
 					this.loading = false;
-				}, 500);
+				}, 200);
 			} catch (error) {
 				this.error = true;
 				this.loading = false;
@@ -92,6 +105,34 @@
 		methods: {
 			closeDialog() {
 				this.clickedDelete = false;
+			},
+
+			updateVideo() {
+				this.$router.push({
+					name: "update-video",
+					params: { video_data: this.video },
+				});
+			},
+
+			async deleteVideoPost() {
+				try {
+					this.loadingDelete = true;
+					const result = await VideoAPI.prototype.delete_videopost(
+						this.$route.params.id
+					);
+
+					this.loadingDelete = false;
+					this.clickedDelete = false;
+					this.snackbar = true;
+					this.message = "Successfully deleted video";
+
+					setTimeout(() => {
+						this.$router.push("/");
+					}, 1000);
+				} catch (error) {
+					this.snackbar = true;
+					this.message = "An error occured";
+				}
 			},
 		},
 	};
