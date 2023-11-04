@@ -7,12 +7,9 @@
 			></v-img>
 		</div>
 		<div class="videoDetailsSection">
-			<div class="titleCon">Video Title Number 1</div>
+			<div class="titleCon">{{ videoData.title }}</div>
 			<div class="descriptionCon">
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum nihil
-				voluptates saepe exercitationem consectetur odit! Dolor asperiores
-				dolores vero magni. Lorem ipsum, dolor sit amet consectetur adipisicing
-				elit. Fugit, doloremque?
+				{{ videoData.description }}
 			</div>
 			<div class="dateAdded">Added at: November 3, 2023</div>
 		</div>
@@ -23,6 +20,9 @@
 	export default {
 		name: "VideoItem",
 		components: {},
+		props: {
+			videoData: Object,
+		},
 		data: () => ({}),
 	};
 </script>

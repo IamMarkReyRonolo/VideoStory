@@ -1,24 +1,41 @@
 <template>
 	<div class="video-list">
 		<div class="fetched" v-if="fetched">
-			<div class="video-list-con">
+			<div class="video-list-con" v-if="this.videos.length != 0">
 				<div
 					class="videoCon"
 					v-for="(data, index) in this.videos"
 					:key="index"
 					@click="goTo(data.id)"
 				>
-					<VideoItem />
+					<VideoItem :videoData="data" />
 				</div>
 			</div>
+			<div class="emptyList" v-if="this.videos.length == 0">
+				<v-img
+					lazy-src="../assets/empty.png"
+					max-width="200"
+					src="../assets/empty.png"
+				></v-img>
+				<span style="padding: 10px">You have no videos yet. Upload Now.</span>
+			</div>
 		</div>
-		<div class="loading" v-if="loading"></div>
+		<div class="loading" v-if="loading">
+			<div class="loadingCon">
+				<v-progress-circular
+					:size="50"
+					color="primary"
+					indeterminate
+				></v-progress-circular>
+			</div>
+		</div>
 		<div class="error" v-if="error"></div>
 	</div>
 </template>
 
 <script>
 	import VideoItem from "./VideoItem.vue";
+	import VideoAPI from "../apis/VideoAPI";
 	export default {
 		name: "VideoList",
 		components: { VideoItem },
@@ -33,15 +50,16 @@
 			],
 		}),
 
-		created() {
+		async created() {
 			try {
 				this.loading = true;
 				this.fetched = false;
-
-				// code here
-
-				this.fetched = true;
-				this.loading = false;
+				const response = await VideoAPI.prototype.get_all_videos();
+				setTimeout(() => {
+					this.videos = response;
+					this.fetched = true;
+					this.loading = false;
+				}, 500);
 			} catch (error) {
 				this.error = true;
 				this.loading = false;
@@ -56,4 +74,18 @@
 	};
 </script>
 
-<style scoped></style>
+<style scoped>
+	.loadingCon {
+		height: 50vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.emptyList {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+</style>

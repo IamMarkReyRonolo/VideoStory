@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import VideoPlayer from "../views/VideoPlayer.vue";
 import AddVideo from "../views/AddVideo.vue";
+import UpdateVideo from "../views/UpdateVideo.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -24,7 +25,7 @@ const routes = [
 	{
 		path: "/update",
 		name: "update-video",
-		component: AddVideo,
+		component: UpdateVideo,
 	},
 ];
 

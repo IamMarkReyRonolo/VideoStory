@@ -20,21 +20,33 @@
 				>
 			</div>
 		</div>
-		<div class="videoPlayerSection">
-			<video width="1000" controls>
-				<source src="movie.mp4" type="video/mp4" />
-			</video>
-		</div>
-		<div class="videoDetailsSection">
-			<div class="titleCon">Video Title Number 1</div>
-			<div class="descriptionCon">
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum nihil
-				voluptates saepe exercitationem consectetur odit! Dolor asperiores
-				dolores vero magni. Lorem ipsum, dolor sit amet consectetur adipisicing
-				elit. Fugit, doloremque?
+		<div class="fetched" v-if="fetched">
+			<div class="videoPlayerSection">
+				<video width="1000" controls>
+					<source src="movie.mp4" type="video/mp4" />
+				</video>
 			</div>
-			<div class="dateAdded">Added at: November 3, 2023</div>
+			<div class="videoDetailsSection">
+				<div class="titleCon">{{ video.title }}</div>
+				<div class="descriptionCon">
+					{{ video.description }}
+				</div>
+				<div class="dateAdded">Added at: {{ video.created_at }}</div>
+				<div class="dateAdded">Updated at: {{ video.updated_at }}</div>
+			</div>
 		</div>
+
+		<div class="loading" v-if="loading">
+			<div class="loadingCon">
+				<v-progress-circular
+					:size="50"
+					color="primary"
+					indeterminate
+				></v-progress-circular>
+			</div>
+		</div>
+		<div class="error" v-if="error"></div>
+
 		<DeleteDialog
 			:dialog="clickedDelete"
 			v-if="clickedDelete"
@@ -45,12 +57,38 @@
 
 <script>
 	import DeleteDialog from "../components/DeleteDialog.vue";
+	import VideoAPI from "../apis/VideoAPI";
 	export default {
 		name: "VideoPlayer",
 		components: { DeleteDialog },
 		data: () => ({
 			clickedDelete: false,
+			video: {},
+			loading: false,
+			fetched: false,
+			error: false,
 		}),
+		async created() {
+			try {
+				this.loading = true;
+				this.fetched = false;
+				const response = await VideoAPI.prototype.get_specific_video(
+					this.$route.params.id
+				);
+				setTimeout(() => {
+					this.video = response;
+					var d = new Date(this.video.created_at);
+					var u = new Date(this.video.updated_at);
+					this.video.created_at = d.toLocaleDateString("en-US");
+					this.video.updated_at = u.toLocaleDateString("en-US");
+					this.fetched = true;
+					this.loading = false;
+				}, 500);
+			} catch (error) {
+				this.error = true;
+				this.loading = false;
+			}
+		},
 		methods: {
 			closeDialog() {
 				this.clickedDelete = false;
@@ -87,5 +125,12 @@
 		font-size: 14px;
 		text-align: justify;
 		padding: 10px 0px;
+	}
+
+	.loadingCon {
+		height: 50vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>
