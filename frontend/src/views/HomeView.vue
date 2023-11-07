@@ -14,15 +14,6 @@
 			>
 		</div>
 
-		<div class="searchCon">
-			<v-text-field
-				outlined
-				placeholder="Search video"
-				rounded
-				dense
-			></v-text-field>
-		</div>
-
 		<div class="videoListsCon">
 			<VideoList />
 		</div>
@@ -45,10 +36,5 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-	}
-
-	.searchCon {
-		margin: 25px auto;
-		width: 350px;
 	}
 </style>

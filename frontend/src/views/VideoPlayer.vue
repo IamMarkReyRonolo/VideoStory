@@ -125,10 +125,7 @@
 					this.clickedDelete = false;
 					this.snackbar = true;
 					this.message = "Successfully deleted video";
-
-					setTimeout(() => {
-						this.$router.push("/");
-					}, 1000);
+					this.$router.push("/");
 				} catch (error) {
 					this.snackbar = true;
 					this.message = "An error occured";

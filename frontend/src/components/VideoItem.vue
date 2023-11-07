@@ -14,7 +14,7 @@
 					border-radius: 5px;
 				"
 			>
-				<v-icon size="70">mdi-play</v-icon>
+				<v-icon size="70" dark>mdi-play</v-icon>
 			</v-img>
 		</div>
 		<div class="videoDetailsSection">

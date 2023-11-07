@@ -68,11 +68,10 @@
 					/>
 				</div>
 				<div class="videoDetailsSection">
-					<div class="titleCon">{{ title }}</div>
+					<div class="titleCon">{{ title ? title : "No Title" }}</div>
 					<div class="descriptionCon">
-						{{ description }}
+						{{ description ? description : "No description" }}
 					</div>
-					<div class="dateAdded">Added at: November 3, 2023</div>
 				</div>
 			</div>
 		</div>
