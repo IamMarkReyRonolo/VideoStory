@@ -26,7 +26,20 @@ To set up and run the project, follow these steps:
    ```
 
 2. Create a virtual environment (recommended) and activate it:
-
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
 3. Install the required Python packages from the requirements.txt file:
-4. Run migrations to set up the database:
-5. Start the Django development server:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Run migrations to set up the database:
+   ```bash
+   python manage.py migrate
+   ```
+7. Start the Django development server:
+   ```bash
+   python manage.py runserver
+   ```
+The Django backend should now be accessible at http://localhost:8000/.
