@@ -43,3 +43,19 @@ To set up and run the project, follow these steps:
    python manage.py runserver
    ```
 The Django backend should now be accessible at http://localhost:8000/.
+
+### Frontend (Vue.js)
+1. Navigate to the frontend/ directory:
+   ```bash
+   python manage.py runserver
+   ```
+2. Make sure you have Node.js and npm installed on your system.
+3. Install the required frontend dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the Vue.js development server:
+   ```bash
+   npm run serve
+   ```
+The Vue.js frontend should now be accessible at http://localhost:8080/.
