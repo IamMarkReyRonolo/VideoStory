@@ -14,7 +14,7 @@
 			<div class="video-list-con" v-if="this.filter_videos.length != 0">
 				<div
 					class="videoCon"
-					v-for="(data, index) in this.videos"
+					v-for="(data, index) in this.filter_videos"
 					:key="index"
 					@click="goTo(data.id)"
 				>
