@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
   path('', views.fetch_all_videos),
-  path('upload', views.post_video),
-  path('<int:id>', views.video_detail)
+  path('post', views.post_video),
+  path('<int:id>', views.view_edit_video)
 ]
