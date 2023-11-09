@@ -67,6 +67,7 @@
 <script>
 	import DeleteDialog from "../components/DeleteDialog.vue";
 	import VideoAPI from "../apis/VideoAPI";
+	import UserAPI from "../apis/UserAPI";
 	import Snackbar from "../components/Snackbar.vue";
 	export default {
 		name: "VideoPlayer",
@@ -82,6 +83,19 @@
 			message: "",
 		}),
 		async created() {
+			if (localStorage.getItem("token")) {
+				try {
+					let user = await UserAPI.prototype.get_user_data();
+				} catch (error) {
+					this.$router.push({
+						name: "login",
+						params: { token_error: error.response.data.detail },
+					});
+				}
+			} else {
+				this.$router.push("/login");
+			}
+
 			try {
 				this.loading = true;
 				this.fetched = false;

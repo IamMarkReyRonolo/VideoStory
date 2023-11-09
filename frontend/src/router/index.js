@@ -4,6 +4,10 @@ import HomeView from "../views/HomeView.vue";
 import VideoPlayer from "../views/VideoPlayer.vue";
 import AddVideo from "../views/AddVideo.vue";
 import UpdateVideo from "../views/UpdateVideo.vue";
+
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
+import NotFound from "../views/NotFound.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -11,6 +15,16 @@ const routes = [
 		path: "/",
 		name: "home",
 		component: HomeView,
+	},
+	{
+		path: "/login",
+		name: "login",
+		component: Login,
+	},
+	{
+		path: "/register",
+		name: "register",
+		component: Register,
 	},
 	{
 		path: "/video/:id",
@@ -26,6 +40,10 @@ const routes = [
 		path: "/update",
 		name: "update-video",
 		component: UpdateVideo,
+	},
+	{
+		path: "/:notFound",
+		component: NotFound,
 	},
 ];
 

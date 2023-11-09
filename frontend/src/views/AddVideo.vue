@@ -90,6 +90,7 @@
 	import SavingModal from "../components/SavingModal.vue";
 	import CloudinaryAPI from "../apis/CloudinaryAPI";
 	import VideoAPI from "../apis/VideoAPI";
+	import UserAPI from "../apis/UserAPI";
 	import Snackbar from "../components/Snackbar.vue";
 	export default {
 		name: "AddVideo",
@@ -107,6 +108,21 @@
 			snackbar: false,
 			message: "",
 		}),
+		async created() {
+			if (localStorage.getItem("token")) {
+				try {
+					let user = await UserAPI.prototype.get_user_data();
+					console.log(user);
+				} catch (error) {
+					this.$router.push({
+						name: "login",
+						params: { token_error: error.response.data.detail },
+					});
+				}
+			} else {
+				this.$router.push("/login");
+			}
+		},
 		methods: {
 			onFileChange(e) {
 				const file = e.target.files[0];
