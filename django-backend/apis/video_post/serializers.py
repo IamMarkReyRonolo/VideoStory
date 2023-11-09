@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from base.models import VideoPost
+from .models import VideoPost
+import re
 
 class VideoPostSerializer(serializers.ModelSerializer):
     class Meta:

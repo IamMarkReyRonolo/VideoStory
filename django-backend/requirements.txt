@@ -1,0 +1,15 @@
+asgiref
+bcrypt
+Django
+django-cors-headers
+django-postgresql
+djangorestframework
+passlib
+psycopg2
+PyJWT
+python-dotenv
+pytz
+sqlparse
+typing_extensions
+tzdata
+gunicorn==19.7.1

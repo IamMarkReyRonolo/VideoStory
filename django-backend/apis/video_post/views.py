@@ -1,17 +1,23 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from base.models import VideoPost
+from .models import VideoPost
 from .serializers import VideoPostSerializer
+from utils.authenticator import JWTAuthentication
+
 
 @api_view(['GET'])
 def fetch_all_videos(request):
     """
     List all video posts
     """
-    videos = VideoPost.objects.all()
+    payload, token = JWTAuthentication().authenticate(request)
+    videos = VideoPost.objects.filter(owner=payload['id'])
     serializer = VideoPostSerializer(videos, many=True)
-    return Response(serializer.data)
+    payload = {
+        "videos": serializer.data
+    }
+    return Response(payload)
 
 
 @api_view(['POST'])
@@ -19,7 +25,11 @@ def post_video(request):
     """
     Upload or post a video
     """
-    serializer = VideoPostSerializer(data=request.data)
+    payload, token = JWTAuthentication().authenticate(request)
+    data = request.data
+    data['owner'] = payload['id']
+
+    serializer = VideoPostSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         message = {
@@ -31,12 +41,13 @@ def post_video(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def video_detail(request, id):
+def view_edit_video(request, id):
     """
     Retrieve, update or delete a video.
     """
+    payload, token = JWTAuthentication().authenticate(request)
     try:
-        video = VideoPost.objects.get(pk=id)
+        video = VideoPost.objects.get(pk=id, owner=payload['id'])
     except VideoPost.DoesNotExist:
         message = {
             "message" : "Video not found"
