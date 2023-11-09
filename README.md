@@ -34,6 +34,16 @@ To set up and run the project, follow these steps:
    ```bash
    pip install -r requirements.txt
    ```
+4. Do not forget to add .env file - these are the environment variables you should have:
+   ```bash
+   JWT_SECRET = add here
+   JWT_ALGORITHM = add here
+   DB_USERNAME = add here
+   DB_PASSWORD = add here
+   DB_HOST =  add here
+   DB_PORT = add here
+   DB_NAME = add here
+   ```
 5. Run migrations to set up the database:
    ```bash
    python manage.py migrate
