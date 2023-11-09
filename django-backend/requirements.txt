@@ -12,3 +12,4 @@ pytz
 sqlparse
 typing_extensions
 tzdata
+gunicorn==19.7.1
