@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import User
 import re
-from lib.bcrypter import Hasher
+from utils.bcrypter import Hasher
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import User
 from .serializers import UserSerializer
-from lib.bcrypter import Hasher
-from lib.authenticator import JWTAuthentication, JWT_SECRET
+from utils.bcrypter import Hasher
+from utils.authenticator import JWTAuthentication, JWT_SECRET
 import jwt
 
 

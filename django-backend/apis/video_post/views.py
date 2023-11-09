@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import VideoPost
 from .serializers import VideoPostSerializer
-from lib.authenticator import JWTAuthentication
+from utils.authenticator import JWTAuthentication
 
 
 @api_view(['GET'])
