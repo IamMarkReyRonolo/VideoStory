@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-cxs+@@vs&8v8_$+17cit*ftvp=(&&p$2+3tb7yjh74*$2lx1gn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['videostoryserver.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
