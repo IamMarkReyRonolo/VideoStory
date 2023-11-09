@@ -129,11 +129,12 @@
 				this.error = true;
 			}
 			try {
-				const token = JSON.parse(localStorage.getItem("token"));
+				const token = localStorage.getItem("token");
 				if (token) {
 					this.$router.push("/");
 				}
 			} catch (error) {
+				console.log(error);
 				localStorage.removeItem("token");
 			}
 		},
