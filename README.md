@@ -47,7 +47,7 @@ The Django backend should now be accessible at http://localhost:8000/.
 ### Frontend (Vue.js)
 1. Navigate to the frontend/ directory:
    ```bash
-   python manage.py runserver
+   cd frontend
    ```
 2. Make sure you have Node.js and npm installed on your system.
 3. Install the required frontend dependencies:
